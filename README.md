@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🍎 과일 비즈니스 토탈 대시보드
 
 > 과일 셀러를 위한 데이터 기반 소싱·마진 분석 통합 웹 대시보드
@@ -77,3 +78,6 @@ http://127.0.0.1:5000/
 - **Frontend:** Vanilla JS, Chart.js, CSS (Glassmorphism Dark Theme)
 - **External API:** KAMIS 농산물 유통정보 Open API
 - **Fonts:** Google Fonts (Outfit, Pretendard)
+=======
+# fruit-sourcing-dashboard
+>>>>>>> 0d0fd8cd02d62998a3fd9566e50b4c78f2366792
