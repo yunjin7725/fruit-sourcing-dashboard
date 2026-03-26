@@ -1,0 +1,56 @@
+# ============================
+# 🔐 민감 정보 / API 키
+# ============================
+.env
+*.env
+
+# ============================
+# 🐍 Python 가상환경 및 캐시
+# ============================
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ============================
+# 📦 대용량 데이터 / 출력 파일
+# ============================
+output.json
+*.zip
+spec.zip
+
+# ============================
+# 🖥 OS 및 에디터 시스템 파일
+# ============================
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# ============================
+# 📋 Excel / Office 임시 파일
+# ============================
+~$*.xlsx
+~$*.xls
+~$*.docx
+
+# ============================
+# 🧪 테스트 / 임시 파일
+# ============================
+test_kamis.py
+test_kamis_dates.py
+process.py
+process_detailed.py
+get_fruits.py

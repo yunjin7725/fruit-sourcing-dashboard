@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프리미엄 과일 소싱 & 마진 계산기</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <div class="background-animation"></div>
+    <div class="container glass-panel">
+        <header>
+            <h1><span class="gradient-text">과일 비즈니스</span> 토탈 대시보드</h1>
+            <nav class="tabs">
+                <button class="tab-btn active" data-tab="sourcing-calendar">1. [Trend] 소싱 분석</button>
+                <button class="tab-btn" data-tab="price-simulator">2. [Margin] 마진 계산기</button>
+                <button class="tab-btn" data-tab="price-comparison">3. [Price] 도매처 비교</button>
+                <button class="tab-btn" style="background: rgba(255, 213, 111, 0.1); border-color:#FFD56F; color:#FFD56F;" data-tab="coupang-benchmarking">4. [Benchmarking] 쿠팡 1위 분석</button>
+                <button class="tab-btn" style="background: rgba(17, 153, 142, 0.1); border-color:#11998e; color:#11998e;" data-tab="sourcing-manager">5. [My List] 소싱 관리장</button>
+            </nav>
+        </header>
+
+        <div class="tab-content" id="sourcing-calendar">
+            <div class="panel">
+                <h2>계절별 소싱 타이밍 (이번 주 기준)</h2>
+                <div class="calendar-controls">
+                    <label>기준 일자:</label>
+                    <input type="date" id="calendar-date">
+                    <button id="calc-season-btn" class="btn-glow small">조회</button>
+                </div>
+
+                <div class="season-grid">
+                    <div class="season-card prepare">
+                        <h3>🚨 소싱 준비 (시즌 시작 2주 전)</h3>
+                        <p class="desc">지금 농가/도매처를 컨택하고 당도/품질 테스트 및 상품 페이지에 세팅해야 하는 품목입니다.</p>
+                        <ul id="prepare-list" class="fruit-list"></ul>
+                    </div>
+
+                    <div class="season-card selling">
+                        <h3>🔥 현재 성수기 (판매 적기)</h3>
+                        <p class="desc">현재 수요가 가장 많고 회전율이 좋은 품목입니다. 마케팅 비용을 집중하세요.</p>
+                        <ul id="selling-list" class="fruit-list"></ul>
+                    </div>
+
+                    <div class="season-card drop">
+                        <h3>⚠️ 시즌 아웃 (종료 1주 전)</h3>
+                        <p class="desc">수확량이 줄어 품질 저하 또는 단가 급등이 예상됩니다. 재고를 털어내세요.</p>
+                        <ul id="drop-list" class="fruit-list"></ul>
+                    </div>
+                </div>
+                
+                <div class="panel mt-4" style="background: rgba(0,240,255,0.02); border: 1px solid rgba(0,240,255,0.1);">
+                    <h3>💡 AI 주간 소싱 가이드 (Output)</h3>
+                    <div id="ai-sourcing-guide" style="padding-top:15px; display:flex; flex-direction:column; gap:15px;">
+                        <div style="color: #888; text-align: center; padding: 20px;">분석 중...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content hidden" id="price-simulator">
+            <div class="simulator-layout">
+                <!-- Left Column: 설정 패널 -->
+                <div class="panel settings-panel">
+                    <h2>소싱 시뮬레이션 설정</h2>
+                    <div class="form-group">
+                        <label for="fruit-select">과일 품목/품종 선택</label>
+                        <select id="fruit-select">
+                            <option value="">로딩 중...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="target-date">비교 기준 일자</label>
+                        <input type="date" id="target-date">
+                    </div>
+
+                    <div class="margin-calculator mt-4">
+                        <div class="form-group">
+                            <label>판매 단위 변환 (자체 소싱 규격)</label>
+                            <select id="weight-select">
+                                <option value="1">1kg (기준)</option>
+                                <option value="2">2kg</option>
+                                <option value="3">3kg</option>
+                                <option value="5">5kg</option>
+                                <option value="10">10kg</option>
+                            </select>
+                        </div>
+                        <div class="form-group flex-group" style="display:flex; gap:10px;">
+                            <div style="flex:1">
+                                <label>플랫폼 선택</label>
+                                <select id="platform-select">
+                                    <option value="10.8">쿠팡 (평균 10.8%)</option>
+                                    <option value="5.5">스마트스토어 (약 5.5%)</option>
+                                    <option value="4.4">당근비즈니스 (4.4%)</option>
+                                    <option value="3.5">토스비즈니스 (3.5%)</option>
+                                    <option value="13.0">G마켓 (13%)</option>
+                                    <option value="13.0">옥션 (13%)</option>
+                                    <option value="custom">직접 입력</option>
+                                </select>
+                            </div>
+                            <div style="flex:1">
+                                <label>수수료율 (%)</label>
+                                <input type="number" id="platform-fee" value="10.8" step="0.1" min="0" max="50">
+                            </div>
+                        </div>
+                        <div class="form-group flex-group" style="display:flex; gap:10px;">
+                            <div style="flex:1">
+                                <label>포장비/기타 (원)</label>
+                                <input type="number" id="packing-cost" value="1500" min="0">
+                            </div>
+                            <div style="flex:1">
+                                <label>배송비 (원)</label>
+                                <input type="number" id="shipping-cost" value="3500" min="0">
+                            </div>
+                        </div>
+                        <div class="form-group flex-group" style="display:flex; gap:10px;">
+                            <div style="flex:1">
+                                <label>마케팅 비용 (%)</label>
+                                <input type="number" id="marketing-fee" value="5" min="0" max="50">
+                            </div>
+                            <div style="flex:1">
+                                <label>목표 마진율 (원가대비 %)</label>
+                                <input type="number" id="target-margin" value="10" min="0" max="100">
+                            </div>
+                        </div>
+                    </div>
+                    <button id="update-date-btn" class="btn-glow w-100">차트 갱신</button>
+                    <button id="go-to-sourcing-manager-btn" class="w-100 mt-2" onclick="document.querySelector('[data-tab=\'sourcing-manager\']').click()" style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 8px;
+                        padding: 12px 20px;
+                        border-radius: 12px;
+                        border: 1.5px solid #11998e;
+                        background: rgba(17, 153, 142, 0.12);
+                        color: #38ef7d;
+                        font-size: 0.95rem;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.25s ease;
+                        letter-spacing: 0.3px;
+                    "
+                    onmouseover="this.style.background='rgba(17,153,142,0.28)'; this.style.boxShadow='0 0 14px rgba(56,239,125,0.3)';"
+                    onmouseout="this.style.background='rgba(17,153,142,0.12)'; this.style.boxShadow='none';">
+                        📁 나의 소싱 관리장으로 이동
+                    </button>
+                </div>
+
+                <!-- Right Column: 차트 + 단가 시뮬레이션 (세로 배치) -->
+                <div class="simulator-right">
+                    <!-- 차트 -->
+                    <div class="kpi-card glass-panel" style="padding: 24px;">
+                        <h3 id="chart-title" style="margin-bottom:16px; color: var(--secondary); font-size:1.1rem;">3개년 가격 트렌드 (선택 중량 기준)</h3>
+                        <div style="height: 320px; position: relative;">
+                            <canvas id="priceChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- 단가 시뮬레이션 (차트 아래) -->
+                    <div class="panel" style="margin-top: 0;">
+                        <h2>최종 단가 시뮬레이션</h2>
+
+                        <!-- 도매처 원가 + 마진 가로 2열 배치 -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start;">
+
+                            <!-- 왼쪽: 도매처 단가 선택 -->
+                            <div>
+                                <div class="result-card price-card" style="margin-bottom: 0;">
+                                    <h3>기준 도매 원가 (<span id="disp-weight">1kg</span> 기준)</h3>
+                                    <div id="b2b-price-display"
+                                        style="margin-top:10px; font-size: 0.85rem; padding:8px; background:rgba(255,255,255,0.05); border-radius:8px; overflow-x: auto;">
+                                        <!-- Radio buttons will be injected here -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 오른쪽: 최적 판매가 + 마진 바 -->
+                            <div>
+                                <div class="result-card target-card">
+                                    <h3>최적 판매가 (마진 <span id="disp-margin">20%</span> 확보)</h3>
+                                    <div class="value-highlight accent" id="suggested-retail-price">0원</div>
+                                </div>
+                                <div class="margin-bars" id="margin-breakdown">
+                                    <div class="margin-bar-item">
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                                            <span style="font-size:0.9rem; color:#ccc;">총 사입 원가 <small>(도매+포장+배송)</small></span>
+                                            <span id="label-cost-val" style="font-weight:bold; color:#fff;">0원</span>
+                                        </div>
+                                        <div class="bar-track">
+                                            <div class="bar-fill cost-fill" id="bar-cost" style="width: 65%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="margin-bar-item">
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                                            <span style="font-size:0.9rem; color:#ccc;">수수료 + 마케팅비</span>
+                                            <span id="label-fee-val" style="font-weight:bold; color:#fff;">0원</span>
+                                        </div>
+                                        <div class="bar-track">
+                                            <div class="bar-fill fee-fill" id="bar-fee" style="width: 15%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="margin-bar-item">
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                                            <span style="font-size:0.9rem; color:#ccc;">순수익 (목표마진)</span>
+                                            <span id="label-margin-val" style="font-weight:bold; color:#00F0FF;">0원</span>
+                                        </div>
+                                        <div class="bar-track">
+                                            <div class="bar-fill margin-fill" id="bar-margin" style="width: 20%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content hidden" id="price-comparison">
+            <div class="panel full-panel">
+                <div class="flex-between">
+                    <div>
+                        <h2>🏢 도매 사이트 3곳 통합 비교 테이블</h2>
+                        <p class="desc">사전 설정된 3대 도매처의 단가를 실시간으로 분석하여 목표 마진율을 달성할 수 있는 최고 효율 공급처를 추천합니다.</p>
+                    </div>
+                    <button id="refresh-comparison" class="btn-outline small">데이터 새로고침</button>
+                </div>
+                
+                <div class="table-container mt-4">
+                    <table class="premium-table">
+                        <thead>
+                            <tr>
+                                <th>도매처</th>
+                                <th>kg당 단가</th>
+                                <th>최소 주문량(MOQ)</th>
+                                <th>배송비/조건</th>
+                                <th>최종 선택 점수</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparison-tbody">
+                            <!-- JS Injected -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="mt-4 p-3" style="background:rgba(255,213,111,0.1); border-radius:8px; border:1px solid rgba(255,213,111,0.3);">
+                    <h3 style="color:#FFD56F;">🤖 AI 종합 추천</h3>
+                    <p id="ai-comparison-recommend" class="mt-2" style="font-size:0.95rem;">마진 데이터를 바탕으로 가장 높은 수익을 줄 수 있는 공급처를 분석 중입니다...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content hidden" id="coupang-benchmarking">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <div class="panel">
+                    <h2>🔥 상위 판매자 벤치마킹 (Top 10)</h2>
+                    <p class="desc mb-3">1~10위 판매자의 전략 및 키워드를 수집/분석하여 경쟁력을 확보합니다.</p>
+                    
+                    <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 20px; display:flex; gap:15px; align-items:center;">
+                        <span style="color:#FFD56F; font-weight:bold;">현재(2페이지) 선택 품목:</span>
+                        <div id="benchmarking-fruit-select" style="flex:1; padding:8px 12px; color:#00F0FF; font-size:1.1rem; font-weight:bold;">
+                            (2페이지 마진 계산기에서 먼저 과일을 갱신해주세요.)
+                        </div>
+                        <button id="refresh-benchmarking-btn" class="btn-outline small">경쟁사 벤치마킹 실행</button>
+                    </div>
+                    
+                    <button id="save-item-btn" class="btn-glow w-100 mb-4" style="font-size:1.05rem; background: linear-gradient(90deg, #11998e, #38ef7d);">⭐ 이 꿀마진 품목을 최종 확정하여 '5. 내 소싱 관리장'에 저장</button>
+
+                    <div id="coupang-top5">
+                        <!-- JS injected -->
+                        <div style="text-align:center; padding: 40px; color:#888;">위젯에서 품목을 선택하시면 AI가 실시간으로 상위 10개 경쟁사 데이터를 긁어옵니다.</div>
+                    </div>
+                </div>
+                
+                <div class="panel">
+                    <h2>🎯 나만의 차별화 전략 수립 (AI)</h2>
+                    <p class="desc mb-3">경쟁사 대비 우위를 점하기 위한 제목 및 태그를 제안합니다.</p>
+                    <div class="result-card target-card">
+                        <h3>차별화된 상품 제목 제안</h3>
+                        <p id="ai-title-suggestion" class="mt-2 value-highlight" style="font-size:1.1rem; color:#00F0FF;">#</p>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h3>검색 최적화 (SEO) 키워드 태그</h3>
+                        <div id="ai-tag-list" style="display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;">
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 p-3" style="background:rgba(255,255,255,0.05); border-radius:12px;">
+                        <h3>리뷰 및 평점 주요 분석</h3>
+                        <ul id="ai-review-analysis" class="mt-2" style="font-size:0.9rem; line-height: 1.6; padding-left: 20px;">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content hidden" id="sourcing-manager">
+            <div class="panel full-panel">
+                <h2>📁 최종 내 소싱 관리장 (소싱 포트폴리오)</h2>
+                <p class="desc">1~4단계를 거쳐 꼼꼼하게 검증된 최적의 소싱 품목들을 이곳에서 한눈에 관리하고 실전 판매에 투입하세요!</p>
+                <div id="saved-items-container" class="sourcing-cards-grid mt-4">
+                    <!-- Cards injected by JS -->
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content hidden" id="sourcing-manager">
+            <div class="panel full-panel">
+                <h2>📁 최종 내 소싱 관리장 (소싱 포트폴리오)</h2>
+                <p class="desc">지금까지 검증한 최적의 소싱 품목들을 이곳에서 한눈에 관리하고 실전 판매에 투입하세요!</p>
+                <button id="clear-sourcing-btn" class="btn-outline small" style="margin-top:10px;">저장 내역 전체 삭제</button>
+                <div id="saved-items-container" class="sourcing-cards-grid mt-4">
+                    <!-- Cards injected by JS -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="/static/app.js"></script>
+</body>
+
+</html>
